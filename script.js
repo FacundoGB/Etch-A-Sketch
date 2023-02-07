@@ -1,54 +1,68 @@
-const CONTAINER = document.querySelector(".container");
-const BUTTONS = document.querySelector(".buttons");
-const CANVAS = document.querySelector('.canvas');
 
-let pixel = "";
+const BUTTONS = document.querySelectorAll("button");
+const CANVAS = document.querySelector(".canvas");
+
+let pixel = '';
 let gridSize = 50;
 
-const DRAW_GRID = (gridSize) => {
-
-    for (let i = 0; i < gridSize ** 2; i++) {
+const DRAW_GRID = (canvasSize) => {
+    for (let i = 0; i < canvasSize ** 2; i++) {
         pixel = document.createElement("div");
         pixel.classList.add("pixel");
-        pixel.style.backgroundColor = 'white'; //initial color of each pixel drawn in the screen
+        pixel.style.backgroundColor = "white"; //initial color of each pixel drawn in the screen
         CANVAS.appendChild(pixel); //add each pixel div to the screen
     }
 
-    CANVAS.style.gridTemplateColumns = 'repeat(${screenSize}, auto)'; //set number of columns in css
-    CANVAS.style.gridTemplateRows = 'repeat(${screenSize}, auto)'; //set number of rows in css
-}
+    CANVAS.style.gridTemplateColumns = `repeat(${canvasSize}, auto)`; //set number of columns in css
+    CANVAS.style.gridTemplateRows = `repeat(${canvasSize}, auto)`; //set number of rows in css
+};
 
 DRAW_GRID(gridSize);
 
 
 const CLEAR = (request) => {
-    if(request === 'resize') {
-        gridSize = prompt("enter a new pixel density of not more than 100", 50);
-        if(gridSize > 100 || gridSize === null) {
-            alert('input beyond accepted parameters or null');
-            gridSize = 100;
-        }
+    if(request === 'resize'){
+        gridSize = prompt('please enter a new grid size of not more than 100', 50);
+      if(gridSize > 100 || gridSize === null){
+        gridSize = 100;
     }
-    CANVAS.innerHTML = ''; //delete all divs 
-    DRAW_GRID(gridSize) //creates grid with new density
-}
+    }
 
-let currentMode = 'black';
+    CANVAS.innerHTML = '';
+    DRAW_GRID(gridSize);
+    ACTIVE();
+  }
+
+
+let currentMode = "black";
 BUTTONS.forEach(button => {
-    button.addEventListener('click', () => {
-        if(button.id === 'resize' || button.id === 'clear') {
+    button.addEventListener("click", () => {
+        if (button.id === "resize" || button.id === "clear") {
             CLEAR(button.id);
-        }else {
+        } else {
             currentMode = button.id;
             CLEAR(button.id);
         }
-    })
-})
+    });
+});
 
-const RANDOM_COLOR = () => {
-    let color = 'rgba';
-    for(let i = 0; i < 3; i++) {
-        color += Math.floor(Math.random()*255) + ',';
-    }
-    return color + '1)';
+
+const ACTIVE = () => {
+    let pixels = document.querySelectorAll(".pixel"); //asign pixels created to variable
+
+    /* Every time the mouse moves over */
+    pixels.forEach((pxl) => {
+        pxl.addEventListener('mouseover', (e) => {
+            //get the current color of pixel hovering over
+            let crntClr = getComputedStyle(pxl, null).getPropertyValue(
+                "background-color"
+            );
+            switch (currentMode) {
+                case "black":
+                    e.target.style.backgroundColor = "rgba(0,0,0)";
+            }
+        });
+    });
 }
+
+ACTIVE();
