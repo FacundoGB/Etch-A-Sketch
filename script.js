@@ -44,3 +44,11 @@ BUTTONS.forEach(button => {
         }
     })
 })
+
+const RANDOM_COLOR = () => {
+    let color = 'rgba';
+    for(let i = 0; i < 3; i++) {
+        color += Math.floor(Math.random()*255) + ',';
+    }
+    return color + '1)';
+}
